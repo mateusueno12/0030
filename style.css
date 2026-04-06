@@ -1,56 +1,537 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-  background-color: #1a1a2e; /* Tom de azul escuro do vídeo */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', 'Courier New', monospace;
+    background: linear-gradient(135deg, #0a0f2a 0%, #1a1a4e 50%, #0d0d2b 100%);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Container principal */
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* ==================== SIDEBAR MENU ==================== */
+.sidebar {
+    position: fixed;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
 }
 
 .menu {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
-.menu a {
-  position: relative;
-  font-size: 3rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.2); /* Cor do texto apagado */
-  padding: 10px 20px;
-  margin: 5px 0;
-  text-transform: uppercase;
-  transition: 0.5s;
-  /* A barra vertical fixa à esquerda */
-  border-left: 4px solid #00f5d4; 
+.menu-item {
+    position: relative;
 }
 
-/* Criamos uma camada por cima do texto original */
-.menu a::before {
-  content: attr(data-text);
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  width: 0;
-  height: 100%;
-  color: #00f5d4; /* Cor vibrante do hover */
-  overflow: hidden;
-  transition: 0.5s;
-  /* A barra vertical que "corre" com o texto */
-  border-right: 4px solid #00f5d4;
-  white-space: nowrap;
+/* Estilo padrão dos links */
+.menu-link {
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    color: rgba(255, 255, 255, 0.25);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    display: inline-block;
+    padding: 8px 0;
 }
 
-/* Efeito ao passar o mouse */
-.menu a:hover::before {
-  width: 100%;
-  /* Filtro de brilho para dar o efeito neon do vídeo */
-  filter: drop-shadow(0 0 10px #00f5d4);
+/* ==================== BARRA ESTÁTICA À ESQUERDA ==================== */
+.menu-link::before {
+    content: '|';
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    opacity: 0.6;
+    font-size: 1.6rem;
+    font-weight: 300;
+    transition: all 0.3s ease;
 }
 
-.menu a:hover {
-  color: rgba(255, 255, 255, 0); /* Esconde o texto de fundo no hover */
+/* ==================== EFEITO HOVER PRINCIPAL ==================== */
+.menu-item:hover .menu-link {
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
+                 0 0 20px rgba(0, 255, 255, 0.3),
+                 0 0 30px rgba(0, 255, 255, 0.1);
+    padding-left: 5px;
+}
+
+/* Efeito de preenchimento lateral (da esquerda para direita) */
+.menu-item:hover .menu-link::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    color: #00ffff;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: fillText 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+/* Animação de preenchimento do texto */
+@keyframes fillText {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+/* ==================== BARRA DINÂMICA (CURSOR QUE SE DESLOCA) ==================== */
+.menu-item:hover .menu-link {
+    position: relative;
+}
+
+/* Barra que aparece e se desloca da esquerda para direita */
+.menu-item:hover .menu-link::before {
+    content: '|';
+    position: absolute;
+    left: auto;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    opacity: 1;
+    font-size: 1.6rem;
+    font-weight: 300;
+    animation: slideBar 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    pointer-events: none;
+}
+
+@keyframes slideBar {
+    0% {
+        left: -25px;
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    70% {
+        left: auto;
+        right: auto;
+    }
+    100% {
+        left: auto;
+        right: -25px;
+        opacity: 1;
+    }
+}
+
+/* ==================== VERSÃO ALTERNATIVA COM PSEUDO-ELEMENTOS SEPARADOS ==================== */
+/* Para garantir que a barra da esquerda não suma no hover */
+.menu-item {
+    position: relative;
+}
+
+/* Barra estática sempre visível */
+.menu-item .static-bar {
+    display: none;
+}
+
+/* Versão melhorada: duas barras distintas */
+.menu-link .left-bar {
+    display: none;
+}
+
+/* Implementação final limpa e precisa */
+.menu-link {
+    position: relative;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+/* Barra fixa à esquerda (sempre visível) */
+.menu-link .left-bar-static {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0, 255, 255, 0.5);
+    font-size: 1.6rem;
+}
+
+/* Barra dinâmica que se move */
+.menu-link .right-bar-dynamic {
+    position: absolute;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* Efeito hover com HTML estrutural */
+.menu-item:hover .menu-link .right-bar-dynamic {
+    animation: moveBar 0.5s ease forwards;
+}
+
+@keyframes moveBar {
+    0% {
+        left: 0;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        left: auto;
+        right: 0;
+    }
+    100% {
+        left: auto;
+        right: -25px;
+        opacity: 1;
+    }
+}
+
+/* ==================== SOLUÇÃO PRINCIPAL (LIMPA E FUNCIONAL) ==================== */
+/* Reset dos estilos anteriores e implementação correta */
+
+/* Reinicialização para a versão final */
+.menu-link {
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    color: rgba(255, 255, 255, 0.25);
+    transition: all 0.4s ease;
+    position: relative;
+    display: inline-block;
+    padding: 8px 25px;
+}
+
+/* Barra estática à esquerda - SEMPRE VISÍVEL */
+.menu-link .static-left {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    opacity: 0.5;
+    font-size: 1.6rem;
+    transition: opacity 0.3s ease;
+}
+
+/* Container para o texto com efeito de preenchimento */
+.menu-link .text-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.menu-link .text-normal {
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.menu-link .text-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    color: #00ffff;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+/* Elemento da barra direita que se move */
+.menu-link .dynamic-right {
+    position: absolute;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+/* HOVER EFFECTS */
+.menu-item:hover .menu-link .text-fill {
+    width: 100%;
+}
+
+.menu-item:hover .menu-link .dynamic-right {
+    animation: slideRightBar 0.4s ease forwards;
+}
+
+@keyframes slideRightBar {
+    0% {
+        left: 0;
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        left: auto;
+        right: -25px;
+        opacity: 1;
+    }
+}
+
+.menu-item:hover .menu-link .static-left {
+    opacity: 1;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+/* ==================== VERSÃO SIMPLIFICADA E CORRETA (USAR ESTA) ==================== */
+
+/* Reset para a versão final que funciona perfeitamente */
+.sidebar .menu .menu-link {
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    font-family: 'Courier New', monospace;
+    color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    padding: 10px 35px;
+}
+
+/* Barra vertical estática à esquerda */
+.sidebar .menu .menu-link::before {
+    content: '|';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00ffff;
+    opacity: 0.4;
+    font-size: 1.8rem;
+    transition: all 0.3s ease;
+}
+
+/* Efeito de preenchimento do texto */
+.sidebar .menu .menu-link::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    color: #00ffff;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    padding: 10px 35px;
+    pointer-events: none;
+}
+
+/* Barra dinâmica que se desloca - criada com span via JavaScript ou pseudo-elemento extra */
+.sidebar .menu .menu-item {
+    position: relative;
+}
+
+/* Efeito no hover */
+.sidebar .menu .menu-item:hover .menu-link {
+    color: transparent;
+}
+
+.sidebar .menu .menu-item:hover .menu-link::after {
+    width: 100%;
+}
+
+.sidebar .menu .menu-item:hover .menu-link::before {
+    opacity: 1;
+    text-shadow: 0 0 5px #00ffff;
+    left: 5px;
+}
+
+/* ==================== VERSÃO FINAL COMPLETA E FUNCIONAL ==================== */
+
+/* Estilos definitivos - todos os efeitos solicitados */
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0a0e27 0%, #141432 50%, #0a0a20 100%);
+}
+
+.sidebar {
+    position: fixed;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu-item {
+    position: relative;
+}
+
+.menu-link {
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+    padding: 8px 0 8px 20px;
+}
+
+/* BARRA ESTÁTICA À ESQUERDA (sempre visível) */
+.menu-link::before {
+    content: '|';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00e5ff;
+    opacity: 0.5;
+    font-size: 1.4rem;
+    transition: all 0.3s ease;
+}
+
+/* ELEMENTO PARA O TEXTO PREENCHIDO */
+.menu-link .fill-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    color: #00e5ff;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+    padding: 8px 0 8px 20px;
+    pointer-events: none;
+}
+
+/* BARRA DINÂMICA (que se desloca) */
+.menu-link .moving-bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #00e5ff;
+    font-size: 1.4rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* EFEITO HOVER COMPLETO */
+.menu-item:hover .menu-link {
+    color: transparent;
+}
+
+.menu-item:hover .menu-link .fill-text {
+    width: 100%;
+}
+
+.menu-item:hover .menu-link::before {
+    opacity: 1;
+    text-shadow: 0 0 5px #00e5ff;
+}
+
+.menu-item:hover .menu-link .moving-bar {
+    animation: slideMovingBar 0.4s ease forwards;
+}
+
+@keyframes slideMovingBar {
+    0% {
+        left: 0;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        left: auto;
+        right: 0;
+    }
+    100% {
+        left: auto;
+        right: -20px;
+        opacity: 1;
+    }
+}
+
+/* Efeito de brilho neon no item hover */
+.menu-item:hover {
+    filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.3));
+}
+
+/* Transição suave para todos os elementos */
+.menu-link, .menu-link::before, .menu-link .fill-text, .menu-link .moving-bar {
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sidebar {
+        right: 30px;
+    }
+    
+    .menu-link {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+    
+    .menu-link::before,
+    .menu-link .moving-bar {
+        font-size: 1rem;
+    }
+    
+    @keyframes slideMovingBar {
+        100% {
+            right: -15px;
+        }
+    }
+}
+
+/* Efeito de glow no fundo (opcional) */
+.glow-effect {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(circle at 90% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 70%);
 }
