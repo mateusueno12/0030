@@ -1,0 +1,56 @@
+body {
+  background-color: #1a1a2e; /* Tom de azul escuro do vídeo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.menu a {
+  position: relative;
+  font-size: 3rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.2); /* Cor do texto apagado */
+  padding: 10px 20px;
+  margin: 5px 0;
+  text-transform: uppercase;
+  transition: 0.5s;
+  /* A barra vertical fixa à esquerda */
+  border-left: 4px solid #00f5d4; 
+}
+
+/* Criamos uma camada por cima do texto original */
+.menu a::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 0;
+  height: 100%;
+  color: #00f5d4; /* Cor vibrante do hover */
+  overflow: hidden;
+  transition: 0.5s;
+  /* A barra vertical que "corre" com o texto */
+  border-right: 4px solid #00f5d4;
+  white-space: nowrap;
+}
+
+/* Efeito ao passar o mouse */
+.menu a:hover::before {
+  width: 100%;
+  /* Filtro de brilho para dar o efeito neon do vídeo */
+  filter: drop-shadow(0 0 10px #00f5d4);
+}
+
+.menu a:hover {
+  color: rgba(255, 255, 255, 0); /* Esconde o texto de fundo no hover */
+}
